@@ -1,9 +1,13 @@
-<script setup>
-import TheWelcome from '../components/TheWelcome.vue'
-</script>
-
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <section class="home-view__container">
+  </section>
 </template>
+
+<style>
+.home-view {
+  &__container {
+    margin: auto;
+    max-width: 768px;
+  }
+}
+</style>
