@@ -1,6 +1,4 @@
 <script setup>
-import { ref } from 'vue'
-
 const props = defineProps({
   btnNextTxt: {
     type: String,
@@ -10,30 +8,30 @@ const props = defineProps({
     type: String,
     default: 'voltar'
   },
+  actual: {
+    type: Number,
+    required: true
+  },
   steps: {
     type: Number,
-    default: 4
+    required: true
   },
   stepTitle: {
     type: String,
     default: ''
   }
 })
-const emits = defineEmits(['updateStep'])
-
-const actualStep = ref(1)
+const emits = defineEmits(['navigateNext', 'navigateBack'])
 
 const handlePrev = () => {
-  if (actualStep.value > 1) {
-    actualStep.value = actualStep.value - 1
-    emits('updateStep', actualStep)
+  if (props.actual > 1) {
+    emits('navigateBack', props.actual - 1)
   }
 }
 
 const handleNext = () => {
-  if (actualStep.value < props.steps) {
-    actualStep.value = actualStep.value + 1
-    emits('updateStep', actualStep)
+  if (props.actual < props.steps) {
+    emits('navigateNext', props.actual + 1)
   }
 }
 </script>
@@ -43,7 +41,7 @@ const handleNext = () => {
     <header class="mb-wizard__header" role="heading">
       <span class="mb-wizard__header__step text--sm">
         Etapa
-        <span class="mb-wizard__header__step--active">{{ actualStep }}</span> de {{ steps }}
+        <span class="mb-wizard__header__step--active">{{ actual }}</span> de {{ steps }}
       </span>
       <h3 class="mb-wizard__header--title">
         {{ stepTitle }}
@@ -56,7 +54,7 @@ const handleNext = () => {
       <button
         class="mb-wizard__actions__back text-md"
         type="button"
-        v-if="actualStep > 1"
+        v-if="actual > 1"
         @click="handlePrev"
       >
         {{ btnBackTxt }}
@@ -79,6 +77,7 @@ const handleNext = () => {
     flex-direction: column;
     gap: 12px;
     text-transform: capitalize;
+    margin-bottom: 24px;
 
     &__step {
       &--active {

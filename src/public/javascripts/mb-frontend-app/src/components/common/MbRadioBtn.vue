@@ -27,9 +27,9 @@ const props = defineProps({
 
 const handleChange = (checked) => {
   if (props.hasModel) {
-    emit('update:modelValue', checked)
+    emit('update:modelValue', props.customValue || checked)
   } else {
-    emit('handleChange', checked)
+    emit('handleChange', props.customValue || checked)
   }
 }
 </script>
@@ -42,7 +42,7 @@ const handleChange = (checked) => {
       type="radio"
       :name="fieldName"
       :value="customValue"
-      :checked="modelValue"
+      :checked="customValue ? modelValue === customValue : modelValue"
       @change="handleChange($event.target.checked)"
     />
     <span>{{ labelTxt }}</span>
@@ -51,7 +51,7 @@ const handleChange = (checked) => {
 
 <style>
 .mb-radio {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 
   &__input {
     display: none;
@@ -69,9 +69,11 @@ const handleChange = (checked) => {
     border-width: 0.1rem;
     border-color: gray;
   }
+
   > input[type='radio']:checked + * {
     color: var(--primary);
   }
+
   > input[type='radio']:checked + *::before {
     background: radial-gradient(
       var(--primary) 0%,

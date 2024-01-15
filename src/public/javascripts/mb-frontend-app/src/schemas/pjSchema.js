@@ -1,5 +1,5 @@
 import { addMethod, object, string } from 'yup'
-import { isValid, parse } from 'date-fns'
+import { isBefore, isValid, parse } from 'date-fns'
 
 const validateCnpj = (cnpj) => {
   cnpj = cnpj.replace(/[^\d]+/g, '')
@@ -11,7 +11,7 @@ const validateCnpj = (cnpj) => {
   let digitosVerificadores = cnpj.substring(tamanhoTotal)
   let soma = 0
   let pos = tamanhoTotal - 7
-  for (i = tamanhoTotal; i >= 1; i--) {
+  for (let i = tamanhoTotal; i >= 1; i--) {
     soma += cnpjSemDigitos.charAt(tamanhoTotal - i) * pos--
     if (pos < 2) pos = 9
   }
@@ -22,7 +22,7 @@ const validateCnpj = (cnpj) => {
   cnpjSemDigitos = cnpj.substring(0, tamanhoTotal)
   soma = 0
   pos = tamanhoTotal - 7
-  for (i = tamanhoTotal; i >= 1; i--) {
+  for (let i = tamanhoTotal; i >= 1; i--) {
     soma += cnpjSemDigitos.charAt(tamanhoTotal - i) * pos--
     if (pos < 2) pos = 9
   }
@@ -35,7 +35,7 @@ const validateCnpj = (cnpj) => {
 
 const validateDate = (dateStr) => {
   const parsedDt = parse(dateStr, 'dd/MM/yyyy', new Date())
-  return isValid(parsedDt)
+  return isValid(parsedDt) && isBefore(parsedDt, new Date())
 }
 
 addMethod(string, 'cnpj', function (message) {

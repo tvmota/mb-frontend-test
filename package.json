@@ -6,7 +6,8 @@
     "lint": "eslint ./**/*.js",
     "lint:fix": "eslint --fix ./**/*.js",
     "start": "pm2-dev start ./src/bin/www ./src/public/app/**/*.js",
-    "stop": "pm2 stop all"
+    "stop": "pm2 stop all",
+    "start:front": "npm run dev --prefix ./src/public/javascripts/mb-frontend-app"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

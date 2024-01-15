@@ -1,10 +1,10 @@
 <script setup>
 //import { computed } from 'vue'
-//import { vMaska } from 'maska'
+import { vMaska } from 'maska'
 
-const emit = defineEmits(['update:modelValue', 'handleBlur'])
+const emits = defineEmits(['update:modelValue', 'handleBlur', 'handleInput'])
 
-defineProps({
+const props = defineProps({
   errorMsg: {
     type: String,
     default: ''
@@ -33,6 +33,10 @@ defineProps({
     type: Boolean,
     default: false
   },
+  hasModel: {
+    type: Boolean,
+    default: true
+  },
   labelTxt: {
     type: String,
     default: ''
@@ -46,21 +50,45 @@ defineProps({
     default: ''
   }
 })
+
+const handleInput = (value) => {
+  if (props.hasModel) {
+    emits('update:modelValue', value)
+  } else {
+    emits('handleInput', value)
+  }
+}
 </script>
 
 <template>
   <div class="mb-input">
     <label class="mb-input--label" :for="fieldName">{{ labelTxt }}</label>
     <input
+      v-if="!hasMask"
       class="mb-input__field"
       :class="[`${hasError && fieldRequired ? 'mb-input__field__error' : ''}`]"
       :name="fieldName"
       :placeholder="fieldPlaceholder || labelTxt"
-      :type="fieldType" 
+      :type="fieldType"
       :value="modelValue"
       :required="fieldRequired"
-      @input="emit('update:modelValue', $event.target.value)"
-      @blur="emit('handleBlur')">
+      @input="handleInput($event.target.value)"
+      @blur="emits('handleBlur')"
+    />
+    <input
+      v-else
+      v-maska
+      :data-maska="mask"
+      class="mb-input__field"
+      :class="[`${hasError && fieldRequired ? 'mb-input__field__error' : ''}`]"
+      :name="fieldName"
+      :placeholder="fieldPlaceholder || labelTxt"
+      :type="fieldType"
+      :value="modelValue"
+      :required="fieldRequired"
+      @maska="(evt) => handleInput(evt.detail.masked)"
+      @blur="emits('handleBlur')"
+    />
     <span v-if="hasError && fieldRequired" class="mb-input__field__error--txt text--sm">
       {{ errorMsg }}
     </span>

@@ -1,7 +1,8 @@
 import { addMethod, object, string } from 'yup'
-import { isValid, parse } from 'date-fns'
+import { isBefore, isValid, parse } from 'date-fns'
 
 const validateCPF = (strCpf) => {
+  strCpf = strCpf.replace(/[^\d]+/g, '')
   if (!/[0-9]{11}/.test(strCpf)) return false
   if (strCpf === '00000000000') return false
 
@@ -45,7 +46,7 @@ const validateCPF = (strCpf) => {
 
 const validateDate = (dateStr) => {
   const parsedDt = parse(dateStr, 'dd/MM/yyyy', new Date())
-  return isValid(parsedDt)
+  return isValid(parsedDt) && isBefore(parsedDt, new Date())
 }
 
 addMethod(string, 'cpf', function (message) {
